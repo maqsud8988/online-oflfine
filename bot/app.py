@@ -29,7 +29,7 @@ dp.filters_factory.bind(IsAdminFilter)
 #  mavjud adminlani olish
 async def get_available_admin():
     try:
-        return await Admin.objects.filter(is_busy=False).afirst()
+        return await Admin.objects.filter(status='online').afirst()
     except Admin.DoesNotExist:
         return None
 
@@ -88,7 +88,7 @@ async def admin_stop(message: types.Message):
         user = admin.current_user
 
         # Administrator mavjudligini yangilang  joriy foydalanuvchini tozalash yani adminni bo'sh qilish
-        admin.is_busy = False
+        admin.status = False
         admin.current_user = None
         await admin.asave()
 
@@ -100,7 +100,7 @@ async def admin_stop(message: types.Message):
 
         waiting_user = await TgUser.objects.filter(status='waiting').afirst()
         if waiting_user:
-            admin.is_busy = True
+            admin.status = True
             admin.current_user = waiting_user
             await admin.asave()
 
@@ -153,7 +153,7 @@ async def process_callback(callback_query: types.CallbackQuery):
     admin = await Admin.objects.prefetch_related('current_user').aget(user_id=admin_id)
     user = admin.current_user
 
-    admin.is_busy = False
+    admin.status = False
     admin.current_user = None
     await admin.asave()
 
@@ -165,7 +165,7 @@ async def process_callback(callback_query: types.CallbackQuery):
 
     waiting_user = await TgUser.objects.filter(status='waiting').afirst()
     if waiting_user:
-        admin.is_busy = True
+        admin.status = True
         admin.current_user = waiting_user
         await admin.asave()
 
@@ -208,7 +208,7 @@ async def admin_message_to_user(message: types.Message):
 #         if available_admin:
 #
 #             # Foydalanuvchini adminga boglab va admini band deb belgilasj
-#             available_admin.is_busy = True
+#             available_admin.status = True
 #             available_admin.current_user = user
 #             await available_admin.asave()
 #
@@ -275,7 +275,7 @@ async def handle_user_message(message: types.Message):
 
         if available_admin:
             # Foydalanuvchini adminga boglab, adminni band deb belgilash
-            available_admin.is_busy = True
+            available_admin.status = True
             available_admin.current_user = user
             await available_admin.asave()
 

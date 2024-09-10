@@ -9,5 +9,5 @@ class TgUserAdmin(admin.ModelAdmin):
 
 @admin.register(models.Admin)
 class AdminAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_id', 'is_busy')
-    list_display_links = ('id', 'user_id', 'is_busy')
+    list_display = ('id', 'user_id', 'status')
+    list_display_links = ('id', 'user_id', 'status')

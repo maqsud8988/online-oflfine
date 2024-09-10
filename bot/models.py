@@ -9,7 +9,6 @@ class TgUser(models.Model):
 
     def __str__(self):
         return self.name
-    
 
 class Admin(models.Model):
     STATUS_CHOICES = [
@@ -18,9 +17,12 @@ class Admin(models.Model):
         ('busy', 'Boshqasi bilan gaplashvoti'),
     ]
     user_id = models.BigIntegerField(unique=True)
-    is_busy = models.BooleanField(default=False)
-    current_user = models.ForeignKey(TgUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_admin")
-
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='offline')
+    current_user = models.ForeignKey('TgUser', on_delete=models.SET_NULL, null=True, blank=True,
+                                         related_name="assigned_admin")
     def __str__(self):
-        return str(self.user_id) + ";Busy: " + str(self.is_busy)
+        return f"Admin {self.user_id}"
 
+    # def __str__(self):
+    #     return str(self.user_id) + ";Busy: " + str(self.is_busy)
+    #
